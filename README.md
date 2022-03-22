@@ -25,8 +25,7 @@ func main() {
 		Mobile:  "1361173787",
 		Status:  -1,
 	}
-	rs := v.Struct(&data).Check()
-	if !rs {
+	if v.Struct(&data).Check() {
 		for _, val := range v.GetErrors() {
 			fmt.Println(val.Msg)
 		}
