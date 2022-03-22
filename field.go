@@ -48,7 +48,12 @@ func (f *Field) Parse() *Field {
 		}
 	}
 	if f.State == false {
-		f.Msg = fmt.Sprintf("字段:%s %s", f.Name, t.GetMsg())
+		if DebugModel {
+			f.Msg = fmt.Sprintf("字段:%s 传值:%v 校验:%s", f.Name, f.Val, t.GetMsg())
+		} else {
+			f.Msg = fmt.Sprintf("字段:%s 校验:%s", f.Name, t.GetMsg())
+		}
+
 	}
 
 	return f

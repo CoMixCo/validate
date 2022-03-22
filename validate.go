@@ -4,6 +4,8 @@ import (
 	"reflect"
 )
 
+var DebugModel bool
+
 type Validate struct {
 	errors map[string]*Field
 }
