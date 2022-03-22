@@ -146,7 +146,7 @@ func section(f *Field, args ...string) bool {
 			return val > b && val < a
 		}
 	case int, int8, int16, int32, int64:
-		val := int64(fdata.(uint))
+		val := int64(fdata.(int))
 		if before, after, found := strings.Cut(args[0], ","); found {
 			b, _ := strconv.ParseInt(before, 10, 64)
 			a, _ := strconv.ParseInt(after, 10, 64)
