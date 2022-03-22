@@ -1,5 +1,3 @@
-use：
-
 package main
 
 import (
