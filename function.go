@@ -3,21 +3,34 @@ package validate
 import (
 	"regexp"
 	"strconv"
+	"strings"
 )
 
 type CallFunc func(f *Field, args ...string) bool
 
+/**
+ * 格式化函数
+ */
 var formatFunc = map[string]CallFunc{
-	"email": email,
+	"email":     email,
+	"cn_mobile": cn_mobile,
 }
 
+/**
+ * 表达式比较函数
+ */
 var expFunc = map[string]CallFunc{
-	"gt":    gt,
-	"eq":    eq,
-	"lt":    lt,
-	"empty": empty,
+	"gt":      gt,
+	"eq":      eq,
+	"lt":      lt,
+	"empty":   empty,
+	"section": section,
+	"in":      in,
 }
 
+/**
+ * 适用数字和字符串
+ */
 func gt(f *Field, args ...string) bool {
 	switch fdata := f.Val.(type) {
 	case uint, uint8, uint16, uint32, uint64:
@@ -33,6 +46,9 @@ func gt(f *Field, args ...string) bool {
 	return false
 }
 
+/**
+ * 适用数字和字符串
+ */
 func eq(f *Field, args ...string) bool {
 	switch fdata := f.Val.(type) {
 	case uint, uint8, uint16, uint32, uint64:
@@ -48,6 +64,9 @@ func eq(f *Field, args ...string) bool {
 	return false
 }
 
+/**
+ * 适用数字和字符串
+ */
 func lt(f *Field, args ...string) bool {
 
 	switch fdata := f.Val.(type) {
@@ -64,6 +83,9 @@ func lt(f *Field, args ...string) bool {
 	return false
 }
 
+/**
+ * 字符串
+ */
 func empty(f *Field, args ...string) bool {
 	switch fdata := f.Val.(type) {
 	case string:
@@ -77,10 +99,82 @@ func empty(f *Field, args ...string) bool {
 	return false
 }
 
+/**
+ * 适用数字和字符串 枚举 in=1,0  in=active,frozen
+ */
+func in(f *Field, args ...string) bool {
+	switch fdata := f.Val.(type) {
+	case uint, uint8, uint16, uint32, uint64:
+		val := uint64(fdata.(uint))
+		inSlice := strings.Split(args[0], ",")
+		for _, v := range inSlice {
+			compare, _ := strconv.ParseUint(v, 10, 64)
+			if val == compare {
+				return true
+			}
+		}
+	case int, int8, int16, int32, int64:
+		val := int64(fdata.(int))
+		inSlice := strings.Split(args[0], ",")
+		for _, v := range inSlice {
+			compare, _ := strconv.ParseInt(v, 10, 64)
+			if val == compare {
+				return true
+			}
+		}
+	case string:
+		inSlice := strings.Split(args[0], ",")
+		for _, v := range inSlice {
+			if fdata == v {
+				return true
+			}
+		}
+	}
+	return false
+}
+
+/**
+ * 数字：区间 section=min,max  min<val<max
+ */
+func section(f *Field, args ...string) bool {
+	switch fdata := f.Val.(type) {
+	case uint, uint8, uint16, uint32, uint64:
+		val := uint64(fdata.(uint))
+		if before, after, found := strings.Cut(args[0], ","); found {
+			b, _ := strconv.ParseUint(before, 10, 64)
+			a, _ := strconv.ParseUint(after, 10, 64)
+			return val > b && val < a
+		}
+	case int, int8, int16, int32, int64:
+		val := int64(fdata.(uint))
+		if before, after, found := strings.Cut(args[0], ","); found {
+			b, _ := strconv.ParseInt(before, 10, 64)
+			a, _ := strconv.ParseInt(after, 10, 64)
+			return val > b && val < a
+		}
+	}
+	return false
+}
+
+/**
+ * 字符串
+ */
 func email(f *Field, args ...string) bool {
 	switch fdata := f.Val.(type) {
 	case string:
 		reg := regexp.MustCompile(`\w+([-+.]\w+)*@\w+([-.]\w+)*\.\w+([-.]\w+)*`)
+		return reg.MatchString(fdata)
+	}
+	return false
+}
+
+/**
+ * 字符串
+ */
+func cn_mobile(f *Field, args ...string) bool {
+	switch fdata := f.Val.(type) {
+	case string:
+		reg := regexp.MustCompile(`^((13[0-9])|(14[5,7])|(15[0-3,5-9])|(17[0,3,5-8])|(18[0-9])|166|198|199|(147))\d{8}$`)
 		return reg.MatchString(fdata)
 	}
 	return false

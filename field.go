@@ -1,5 +1,7 @@
 package validate
 
+import "fmt"
+
 type Field struct {
 	Name  string
 	Val   any
@@ -46,7 +48,7 @@ func (f *Field) Parse() *Field {
 		}
 	}
 	if f.State == false {
-		f.Msg = t.GetMsg()
+		f.Msg = fmt.Sprintf("字段:%s %s", f.Name, t.GetMsg())
 	}
 
 	return f
