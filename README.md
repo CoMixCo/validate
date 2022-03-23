@@ -1,5 +1,15 @@
 v1版本：
 自定义验证标签：v.Use(tagName string, func(f *validate.Field, args ...string) bool)
+示例：
+```
+v.Use("lt_field", func(f *validate.Field, args ...string) bool {
+	diff_field := f.RefValue.FieldByName(args[0])
+	if len(f.Val.(string)) < len(string(diff_field.Interface().(string))) {
+		return true
+	}
+	return false
+})
+```
 
 支持逻辑运算 且[&] 和 或[|]
 示例：
