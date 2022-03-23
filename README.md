@@ -67,8 +67,7 @@ func main() {
 		}
 		return false
 	})
-	rs := v.Struct(&data).Check()
-	if !rs {
+	if !v.Struct(&data).Check() {
 		fmt.Println(v.Error())
 	}
 }
