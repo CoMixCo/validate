@@ -1,4 +1,4 @@
-示例：
+示例一：
 
 ```
 package main
