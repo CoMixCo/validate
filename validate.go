@@ -24,7 +24,7 @@ func (v *Validate) Use(name string, f CallFunc) {
 	}
 }
 
-func (v *Validate) Struct(s any) *Validate {
+func (v *Validate) Struct(s interface{}) *Validate {
 	svalue := reflect.ValueOf(s)
 	if svalue.Kind() == reflect.Ptr {
 		svalue = svalue.Elem()

@@ -8,14 +8,14 @@ import (
 type Field struct {
 	RefValue reflect.Value
 	Name     string
-	Val      any
+	Val      interface{}
 	Kind     string
 	Tag      string
 	State    bool
 	Msg      string
 }
 
-func NewField(r reflect.Value, n string, v any, k string, t string) *Field {
+func NewField(r reflect.Value, n string, v interface{}, k string, t string) *Field {
 	return &Field{
 		RefValue: r,
 		Name:     n,
