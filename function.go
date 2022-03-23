@@ -20,12 +20,13 @@ var formatFunc = map[string]CallFunc{
  * 表达式比较函数
  */
 var expFunc = map[string]CallFunc{
-	"gt":      gt,
-	"eq":      eq,
-	"lt":      lt,
-	"empty":   empty,
-	"section": section,
-	"in":      in,
+	"gt":       gt,
+	"eq":       eq,
+	"lt":       lt,
+	"empty":    empty,
+	"section":  section,
+	"in":       in,
+	"eq_field": eq_field,
 }
 
 /**
@@ -176,6 +177,17 @@ func cn_mobile(f *Field, args ...string) bool {
 	case string:
 		reg := regexp.MustCompile(`^((13[0-9])|(14[5,7])|(15[0-3,5-9])|(17[0,3,5-8])|(18[0-9])|166|198|199|(147))\d{8}$`)
 		return reg.MatchString(fdata)
+	}
+	return false
+}
+
+/**
+ * 字段比较
+ */
+func eq_field(f *Field, args ...string) bool {
+	diff_field := f.RefValue.FieldByName(args[0])
+	if f.Val == diff_field.Interface() {
+		return true
 	}
 	return false
 }

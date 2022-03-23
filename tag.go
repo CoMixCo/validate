@@ -19,11 +19,12 @@ func NewTag(str string) *Tag {
 }
 
 func (t *Tag) Parse() *Tag {
+	//干掉所有空格
 	if b, a, f := strings.Cut(t.str, ">"); f {
-		t.expStr = strings.TrimSpace(b)
-		t.msg = strings.TrimSpace(a)
+		t.msg = a
+		t.expStr = strings.Replace(b, " ", "", -1)
 	} else {
-		t.expStr = strings.TrimSpace(t.str)
+		t.expStr = strings.Replace(t.str, " ", "", -1)
 	}
 	t.exp = OrExp(t.expStr)
 	return t
@@ -37,7 +38,7 @@ func (t *Tag) GetExp() Or {
 	return t.exp
 }
 
-//empty=true | empty=false&len>0
+//eg: empty=true | empty=false&len>0
 func OrExp(str string) Or {
 	or := Or{}
 	slice := strings.Split(str, "|")
@@ -47,16 +48,14 @@ func OrExp(str string) Or {
 	return or
 }
 
-// empty=false&len>0
+// eg: empty=false&len>0
 func AndExp(str string) And {
 	and := And{}
-	str = strings.TrimSpace(str)
 	slice := strings.Split(str, "&")
 	for _, part := range slice {
 		if b, a, f := strings.Cut(part, "="); f {
-			and[strings.TrimSpace(b)] = strings.TrimSpace(a)
+			and[b] = a
 		}
 	}
 	return and
-
 }

@@ -10,7 +10,6 @@ import (
 
 func main() {
 
-	//validate.DebugModel = true
 	v := validate.New()
 	data := struct {
 		Account string `validate:"empty=false & format=email > 邮箱格式错误"`
@@ -29,7 +28,49 @@ func main() {
 		for _, val := range v.GetErrors() {
 			fmt.Println(val.Msg)
 		}
-		//fmt.Println(v.Error())
 	}
 }
+```
+
+示例二
+```
+package main
+
+import (
+	"fmt"
+	"utils/validate"
+)
+
+func main() {
+
+	validate.DebugModel = true
+	v := validate.New()
+	data := struct {
+		Account        string `validate:"empty=false & format=email >邮箱格式错误"`
+		Name           string `validate:"empty=true | gt=4 >字符必须大于4个"`
+		FirstName      string `validate:"lt_field=Name > 姓名必须小于全名"`
+		Age            int    `validate:"eq=0 | section=10,100 >年龄需要大于10小于100"`
+		Password       string `validate:"gt=6>密码长度需要大于6"`
+		PasswordRepeat string `validate:"eq_field=Password>两次密码不相同"`
+	}{
+		Account:        "even@qq.com",
+		Name:           "even cc",
+		FirstName:      "ccsdsdsd",
+		Age:            0,
+		Password:       "1qaz@2wsx",
+		PasswordRepeat: "1qaz@2wsx1",
+	}
+	v.Use("lt_field", func(f *validate.Field, args ...string) bool {
+		diff_field := f.RefValue.FieldByName(args[0])
+		if len(f.Val.(string)) < len(string(diff_field.Interface().(string))) {
+			return true
+		}
+		return false
+	})
+	rs := v.Struct(&data).Check()
+	if !rs {
+		fmt.Println(v.Error())
+	}
+}
+
 ```
