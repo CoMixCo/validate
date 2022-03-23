@@ -35,12 +35,13 @@ func (v *Validate) Struct(s interface{}) *Validate {
 	stype := svalue.Type()
 	for i := 0; i < stype.NumField(); i++ {
 		ftype := stype.Field(i)
-		fvalue := svalue.Field(i)
-		f := NewField(svalue, ftype.Name, fvalue.Interface(), ftype.Type.Kind().String(), ftype.Tag.Get("validate")).Parse()
-		if f.State == false {
-			v.errors[f.Name] = f
+		if vtag, ok := ftype.Tag.Lookup("validate"); ok {
+			fvalue := svalue.Field(i)
+			f := NewField(svalue, ftype.Name, fvalue.Interface(), ftype.Type.Kind().String(), vtag).Parse()
+			if f.State == false {
+				v.errors[f.Name] = f
+			}
 		}
-
 	}
 	return v
 }
