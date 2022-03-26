@@ -6,23 +6,23 @@ import (
 )
 
 type Field struct {
-	RefValue reflect.Value
-	Name     string
-	Val      interface{}
-	Kind     string
-	Tag      string
-	State    bool
-	Msg      string
+	RefStruct reflect.Value
+	Name      string
+	Val       reflect.Value
+	Kind      reflect.Kind
+	Tag       string
+	State     bool
+	Msg       string
 }
 
-func NewField(r reflect.Value, n string, v interface{}, k string, t string) *Field {
+func NewField(s reflect.Value, n string, v reflect.Value, k reflect.Kind, t string) *Field {
 	return &Field{
-		RefValue: r,
-		Name:     n,
-		Val:      v,
-		Kind:     k,
-		Tag:      t,
-		State:    false,
+		RefStruct: s,
+		Name:      n,
+		Val:       v,
+		Kind:      k,
+		Tag:       t,
+		State:     false,
 	}
 }
 

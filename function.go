@@ -1,6 +1,7 @@
 package validate
 
 import (
+	"reflect"
 	"regexp"
 	"strconv"
 	"strings"
@@ -29,23 +30,24 @@ var expFunc = map[string]CallFunc{
 	"eq_field": eq_field,
 }
 
-/**
- * 适用数字和字符串
- */
 func gt(f *Field, args ...string) bool {
-	switch fdata := f.Val.(type) {
-	case uint, uint8, uint16, uint32, uint64:
-		compare, _ := strconv.ParseUint(args[0], 10, 64)
-		return uint64(fdata.(uint)) > compare
-	case int, int8, int16, int32, int64:
-		compare, _ := strconv.ParseInt(args[0], 10, 64)
-		return int64(fdata.(int)) > compare
-	case float32, float64:
-		compare, _ := strconv.ParseFloat(args[0], 64)
-		return float64(fdata.(float64)) > compare
-	case string:
-		compare, _ := strconv.Atoi(args[0])
-		return len(fdata) > compare
+	switch f.Kind {
+	case reflect.Int, reflect.Int8, reflect.Int16, reflect.Int32, reflect.Int64:
+		if compare_val, err := strconv.ParseInt(args[0], 10, 64); err == nil {
+			return f.Val.Int() > compare_val
+		}
+	case reflect.Uint, reflect.Uint8, reflect.Uint16, reflect.Uint32, reflect.Uint64:
+		if compare_val, err := strconv.ParseUint(args[0], 10, 64); err == nil {
+			return f.Val.Uint() > compare_val
+		}
+	case reflect.Float32, reflect.Float64:
+		if compare_val, err := strconv.ParseFloat(args[0], 64); err == nil {
+			return f.Val.Float() > compare_val
+		}
+	case reflect.String:
+		if compare_val, err := strconv.Atoi(args[0]); err == nil {
+			return f.Val.Len() > compare_val
+		}
 	}
 	return false
 }
@@ -54,19 +56,23 @@ func gt(f *Field, args ...string) bool {
  * 适用数字和字符串
  */
 func eq(f *Field, args ...string) bool {
-	switch fdata := f.Val.(type) {
-	case uint, uint8, uint16, uint32, uint64:
-		compare, _ := strconv.ParseUint(args[0], 10, 64)
-		return uint64(fdata.(uint)) == compare
-	case int, int8, int16, int32, int64:
-		compare, _ := strconv.ParseInt(args[0], 10, 64)
-		return int64(fdata.(int)) == compare
-	case float32, float64:
-		compare, _ := strconv.ParseFloat(args[0], 64)
-		return float64(fdata.(float64)) == compare
-	case string:
-		compare, _ := strconv.Atoi(args[0])
-		return len(fdata) == compare
+	switch f.Kind {
+	case reflect.Int, reflect.Int8, reflect.Int16, reflect.Int32, reflect.Int64:
+		if compare_val, err := strconv.ParseInt(args[0], 10, 64); err == nil {
+			return f.Val.Int() == compare_val
+		}
+	case reflect.Uint, reflect.Uint8, reflect.Uint16, reflect.Uint32, reflect.Uint64:
+		if compare_val, err := strconv.ParseUint(args[0], 10, 64); err == nil {
+			return f.Val.Uint() == compare_val
+		}
+	case reflect.Float32, reflect.Float64:
+		if compare_val, err := strconv.ParseFloat(args[0], 64); err == nil {
+			return f.Val.Float() == compare_val
+		}
+	case reflect.String:
+		if compare_val, err := strconv.Atoi(args[0]); err == nil {
+			return f.Val.Len() == compare_val
+		}
 	}
 	return false
 }
@@ -75,20 +81,23 @@ func eq(f *Field, args ...string) bool {
  * 适用数字和字符串
  */
 func lt(f *Field, args ...string) bool {
-
-	switch fdata := f.Val.(type) {
-	case uint, uint8, uint16, uint32, uint64:
-		compare, _ := strconv.ParseUint(args[0], 10, 64)
-		return uint64(fdata.(uint)) < compare
-	case int, int8, int16, int32, int64:
-		compare, _ := strconv.ParseInt(args[0], 10, 64)
-		return int64(fdata.(int)) < compare
-	case float32, float64:
-		compare, _ := strconv.ParseFloat(args[0], 64)
-		return float64(fdata.(float64)) < compare
-	case string:
-		compare, _ := strconv.Atoi(args[0])
-		return len(fdata) < compare
+	switch f.Kind {
+	case reflect.Int, reflect.Int8, reflect.Int16, reflect.Int32, reflect.Int64:
+		if compare_val, err := strconv.ParseInt(args[0], 10, 64); err == nil {
+			return f.Val.Int() < compare_val
+		}
+	case reflect.Uint, reflect.Uint8, reflect.Uint16, reflect.Uint32, reflect.Uint64:
+		if compare_val, err := strconv.ParseUint(args[0], 10, 64); err == nil {
+			return f.Val.Uint() < compare_val
+		}
+	case reflect.Float32, reflect.Float64:
+		if compare_val, err := strconv.ParseFloat(args[0], 64); err == nil {
+			return f.Val.Float() < compare_val
+		}
+	case reflect.String:
+		if compare_val, err := strconv.Atoi(args[0]); err == nil {
+			return f.Val.Len() < compare_val
+		}
 	}
 	return false
 }
@@ -97,13 +106,12 @@ func lt(f *Field, args ...string) bool {
  * 字符串
  */
 func empty(f *Field, args ...string) bool {
-	switch fdata := f.Val.(type) {
-	case string:
-		len := len(fdata)
+	switch f.Kind {
+	case reflect.String:
 		if args[0] == "true" {
-			return len == 0
+			return f.Val.Len() == 0
 		} else {
-			return len != 0
+			return f.Val.Len() > 0
 		}
 	}
 	return false
@@ -113,38 +121,44 @@ func empty(f *Field, args ...string) bool {
  * 适用数字和字符串 枚举 in=1,0  in=active,frozen
  */
 func in(f *Field, args ...string) bool {
-	switch fdata := f.Val.(type) {
-	case uint, uint8, uint16, uint32, uint64:
-		val := uint64(fdata.(uint))
+	switch f.Kind {
+	case reflect.Int, reflect.Int8, reflect.Int16, reflect.Int32, reflect.Int64:
 		inSlice := strings.Split(args[0], ",")
 		for _, v := range inSlice {
-			compare, _ := strconv.ParseUint(v, 10, 64)
-			if val == compare {
+			compare_val, err := strconv.ParseInt(v, 10, 64)
+			if err != nil {
+				return false
+			}
+			if f.Val.Int() == compare_val {
 				return true
 			}
 		}
-	case int, int8, int16, int32, int64:
-		val := int64(fdata.(int))
+	case reflect.Uint, reflect.Uint8, reflect.Uint16, reflect.Uint32, reflect.Uint64:
 		inSlice := strings.Split(args[0], ",")
 		for _, v := range inSlice {
-			compare, _ := strconv.ParseInt(v, 10, 64)
-			if val == compare {
+			compare_val, err := strconv.ParseUint(v, 10, 64)
+			if err != nil {
+				return false
+			}
+			if f.Val.Uint() == compare_val {
 				return true
 			}
 		}
-	case float32, float64:
-		val := float64(fdata.(float64))
+	case reflect.Float32, reflect.Float64:
 		inSlice := strings.Split(args[0], ",")
 		for _, v := range inSlice {
-			compare, _ := strconv.ParseFloat(v, 64)
-			if val == compare {
+			compare_val, err := strconv.ParseFloat(v, 64)
+			if err != nil {
+				return false
+			}
+			if f.Val.Float() == compare_val {
 				return true
 			}
 		}
-	case string:
+	case reflect.String:
 		inSlice := strings.Split(args[0], ",")
-		for _, v := range inSlice {
-			if fdata == v {
+		for _, compare_val := range inSlice {
+			if f.Val.String() == compare_val {
 				return true
 			}
 		}
@@ -156,26 +170,26 @@ func in(f *Field, args ...string) bool {
  * 数字：区间 section=min,max  min<val<max
  */
 func section(f *Field, args ...string) bool {
-	switch fdata := f.Val.(type) {
-	case uint, uint8, uint16, uint32, uint64:
-		val := uint64(fdata.(uint))
-		if before, after, found := strings.Cut(args[0], ","); found {
-			b, _ := strconv.ParseUint(before, 10, 64)
-			a, _ := strconv.ParseUint(after, 10, 64)
-			return val > b && val < a
-		}
-	case int, int8, int16, int32, int64:
-		val := int64(fdata.(int))
+	switch f.Kind {
+	case reflect.Int, reflect.Int8, reflect.Int16, reflect.Int32, reflect.Int64:
 		if before, after, found := strings.Cut(args[0], ","); found {
 			b, _ := strconv.ParseInt(before, 10, 64)
 			a, _ := strconv.ParseInt(after, 10, 64)
+			val := f.Val.Int()
 			return val > b && val < a
 		}
-	case float32, float64:
-		val := float64(fdata.(float64))
+	case reflect.Uint, reflect.Uint8, reflect.Uint16, reflect.Uint32, reflect.Uint64:
+		if before, after, found := strings.Cut(args[0], ","); found {
+			b, _ := strconv.ParseUint(before, 10, 64)
+			a, _ := strconv.ParseUint(after, 10, 64)
+			val := f.Val.Uint()
+			return val > b && val < a
+		}
+	case reflect.Float32, reflect.Float64:
 		if before, after, found := strings.Cut(args[0], ","); found {
 			b, _ := strconv.ParseFloat(before, 64)
 			a, _ := strconv.ParseFloat(after, 64)
+			val := f.Val.Float()
 			return val > b && val < a
 		}
 	}
@@ -186,10 +200,10 @@ func section(f *Field, args ...string) bool {
  * 字符串
  */
 func email(f *Field, args ...string) bool {
-	switch fdata := f.Val.(type) {
-	case string:
+	switch f.Kind {
+	case reflect.String:
 		reg := regexp.MustCompile(`\w+([-+.]\w+)*@\w+([-.]\w+)*\.\w+([-.]\w+)*`)
-		return reg.MatchString(fdata)
+		return reg.MatchString(f.Val.String())
 	}
 	return false
 }
@@ -198,21 +212,28 @@ func email(f *Field, args ...string) bool {
  * 字符串
  */
 func cn_mobile(f *Field, args ...string) bool {
-	switch fdata := f.Val.(type) {
-	case string:
+	switch f.Kind {
+	case reflect.String:
 		reg := regexp.MustCompile(`^((13[0-9])|(14[5,7])|(15[0-3,5-9])|(17[0,3,5-8])|(18[0-9])|166|198|199|(147))\d{8}$`)
-		return reg.MatchString(fdata)
+		return reg.MatchString(f.Val.String())
 	}
 	return false
 }
 
 /**
- * 字段比较
+ * 跨字段比较
  */
 func eq_field(f *Field, args ...string) bool {
-	diff_field := f.RefValue.FieldByName(args[0])
-	if f.Val == diff_field.Interface() {
-		return true
+	compare_val := f.RefStruct.FieldByName(args[0])
+	switch f.Kind {
+	case reflect.Int, reflect.Int8, reflect.Int16, reflect.Int32, reflect.Int64:
+		return f.Val.Int() == compare_val.Int()
+	case reflect.Uint, reflect.Uint8, reflect.Uint16, reflect.Uint32, reflect.Uint64:
+		return f.Val.Uint() == compare_val.Uint()
+	case reflect.Float32, reflect.Float64:
+		return f.Val.Float() == compare_val.Float()
+	case reflect.String:
+		return f.Val.String() == compare_val.String()
 	}
 	return false
 }

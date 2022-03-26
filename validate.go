@@ -37,7 +37,7 @@ func (v *Validate) Struct(s interface{}) *Validate {
 		ftype := stype.Field(i)
 		if vtag, ok := ftype.Tag.Lookup("validate"); ok {
 			fvalue := svalue.Field(i)
-			f := NewField(svalue, ftype.Name, fvalue.Interface(), ftype.Type.Kind().String(), vtag).Parse()
+			f := NewField(svalue, ftype.Name, fvalue, ftype.Type.Kind(), vtag).Parse()
 			if f.State == false {
 				v.errors[f.Name] = f
 			}
