@@ -40,6 +40,9 @@ func gt(f *Field, args ...string) bool {
 	case int, int8, int16, int32, int64:
 		compare, _ := strconv.ParseInt(args[0], 10, 64)
 		return int64(fdata.(int)) > compare
+	case float32, float64:
+		compare, _ := strconv.ParseFloat(args[0], 64)
+		return float64(fdata.(float64)) > compare
 	case string:
 		compare, _ := strconv.Atoi(args[0])
 		return len(fdata) > compare
@@ -58,6 +61,9 @@ func eq(f *Field, args ...string) bool {
 	case int, int8, int16, int32, int64:
 		compare, _ := strconv.ParseInt(args[0], 10, 64)
 		return int64(fdata.(int)) == compare
+	case float32, float64:
+		compare, _ := strconv.ParseFloat(args[0], 64)
+		return float64(fdata.(float64)) == compare
 	case string:
 		compare, _ := strconv.Atoi(args[0])
 		return len(fdata) == compare
@@ -77,6 +83,9 @@ func lt(f *Field, args ...string) bool {
 	case int, int8, int16, int32, int64:
 		compare, _ := strconv.ParseInt(args[0], 10, 64)
 		return int64(fdata.(int)) < compare
+	case float32, float64:
+		compare, _ := strconv.ParseFloat(args[0], 64)
+		return float64(fdata.(float64)) < compare
 	case string:
 		compare, _ := strconv.Atoi(args[0])
 		return len(fdata) < compare
@@ -123,6 +132,15 @@ func in(f *Field, args ...string) bool {
 				return true
 			}
 		}
+	case float32, float64:
+		val := float64(fdata.(float64))
+		inSlice := strings.Split(args[0], ",")
+		for _, v := range inSlice {
+			compare, _ := strconv.ParseFloat(v, 64)
+			if val == compare {
+				return true
+			}
+		}
 	case string:
 		inSlice := strings.Split(args[0], ",")
 		for _, v := range inSlice {
@@ -151,6 +169,13 @@ func section(f *Field, args ...string) bool {
 		if before, after, found := strings.Cut(args[0], ","); found {
 			b, _ := strconv.ParseInt(before, 10, 64)
 			a, _ := strconv.ParseInt(after, 10, 64)
+			return val > b && val < a
+		}
+	case float32, float64:
+		val := float64(fdata.(float64))
+		if before, after, found := strings.Cut(args[0], ","); found {
+			b, _ := strconv.ParseFloat(before, 64)
+			a, _ := strconv.ParseFloat(after, 64)
 			return val > b && val < a
 		}
 	}
