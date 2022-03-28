@@ -3,12 +3,19 @@ v1版本：
 示例：
 ```
 v.Use("lt_field", func(f *validate.Field, args ...string) bool {
-	diff_field := f.RefValue.FieldByName(args[0])
-	if len(f.Val.(string)) < len(string(diff_field.Interface().(string))) {
-		return true
-	}
-	return false
-})
+		compare_val := f.RefStruct.FieldByName(args[0])
+		switch f.Kind {
+		case reflect.Int, reflect.Int8, reflect.Int16, reflect.Int32, reflect.Int64:
+			return f.Val.Int() < compare_val.Int()
+		case reflect.Uint, reflect.Uint8, reflect.Uint16, reflect.Uint32, reflect.Uint64:
+			return f.Val.Uint() < compare_val.Uint()
+		case reflect.Float32, reflect.Float64:
+			return f.Val.Float() < compare_val.Float()
+		case reflect.String:
+			return f.Val.Len() < compare_val.Len()
+		}
+		return false
+	})
 ```
 
 支持逻辑运算 且[&] 和 或[|]
