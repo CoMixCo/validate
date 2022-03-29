@@ -52,6 +52,28 @@ func gt(f *Field, args ...string) bool {
 	return false
 }
 
+func gte(f *Field, args ...string) bool {
+	switch f.Kind {
+	case reflect.Int, reflect.Int8, reflect.Int16, reflect.Int32, reflect.Int64:
+		if compare_val, err := strconv.ParseInt(args[0], 10, 64); err == nil {
+			return f.Val.Int() >= compare_val
+		}
+	case reflect.Uint, reflect.Uint8, reflect.Uint16, reflect.Uint32, reflect.Uint64:
+		if compare_val, err := strconv.ParseUint(args[0], 10, 64); err == nil {
+			return f.Val.Uint() >= compare_val
+		}
+	case reflect.Float32, reflect.Float64:
+		if compare_val, err := strconv.ParseFloat(args[0], 64); err == nil {
+			return f.Val.Float() >= compare_val
+		}
+	case reflect.String:
+		if compare_val, err := strconv.Atoi(args[0]); err == nil {
+			return f.Val.Len() >= compare_val
+		}
+	}
+	return false
+}
+
 /**
  * 适用数字和字符串
  */
@@ -97,6 +119,31 @@ func lt(f *Field, args ...string) bool {
 	case reflect.String:
 		if compare_val, err := strconv.Atoi(args[0]); err == nil {
 			return f.Val.Len() < compare_val
+		}
+	}
+	return false
+}
+
+/**
+ * 适用数字和字符串
+ */
+func lte(f *Field, args ...string) bool {
+	switch f.Kind {
+	case reflect.Int, reflect.Int8, reflect.Int16, reflect.Int32, reflect.Int64:
+		if compare_val, err := strconv.ParseInt(args[0], 10, 64); err == nil {
+			return f.Val.Int() <= compare_val
+		}
+	case reflect.Uint, reflect.Uint8, reflect.Uint16, reflect.Uint32, reflect.Uint64:
+		if compare_val, err := strconv.ParseUint(args[0], 10, 64); err == nil {
+			return f.Val.Uint() <= compare_val
+		}
+	case reflect.Float32, reflect.Float64:
+		if compare_val, err := strconv.ParseFloat(args[0], 64); err == nil {
+			return f.Val.Float() <= compare_val
+		}
+	case reflect.String:
+		if compare_val, err := strconv.Atoi(args[0]); err == nil {
+			return f.Val.Len() <= compare_val
 		}
 	}
 	return false
