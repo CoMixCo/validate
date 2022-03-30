@@ -22,8 +22,10 @@ var formatFunc = map[string]CallFunc{
  */
 var expFunc = map[string]CallFunc{
 	"gt":       gt,
+	"gte":      gte,
 	"eq":       eq,
 	"lt":       lt,
+	"lte":      lte,
 	"empty":    empty,
 	"section":  section,
 	"in":       in,
