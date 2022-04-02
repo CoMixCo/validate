@@ -21,15 +21,16 @@ var formatFunc = map[string]CallFunc{
  * 表达式比较函数
  */
 var expFunc = map[string]CallFunc{
-	"gt":       gt,
-	"gte":      gte,
-	"eq":       eq,
-	"lt":       lt,
-	"lte":      lte,
-	"empty":    empty,
-	"section":  section,
-	"in":       in,
-	"eq_field": eq_field,
+	"gt":              gt,
+	"gte":             gte,
+	"eq":              eq,
+	"lt":              lt,
+	"lte":             lte,
+	"empty":           empty,
+	"open_interval":   open_interval,
+	"closed_interval": closed_interval,
+	"in":              in,
+	"eq_field":        eq_field,
 }
 
 func gt(f *Field, args ...string) bool {
@@ -216,9 +217,9 @@ func in(f *Field, args ...string) bool {
 }
 
 /**
- * 数字：区间 section=min,max  min<val<max
+ * 数字：开区间 open_interval=min,max  min<val<max
  */
-func section(f *Field, args ...string) bool {
+func open_interval(f *Field, args ...string) bool {
 	switch f.Kind {
 	case reflect.Int, reflect.Int8, reflect.Int16, reflect.Int32, reflect.Int64:
 		if before, after, found := strings.Cut(args[0], ","); found {
@@ -240,6 +241,36 @@ func section(f *Field, args ...string) bool {
 			a, _ := strconv.ParseFloat(after, 64)
 			val := f.Val.Float()
 			return val > b && val < a
+		}
+	}
+	return false
+}
+
+/**
+ * 数字：闭区间 closed_interval=min,max  min<=val<=max
+ */
+func closed_interval(f *Field, args ...string) bool {
+	switch f.Kind {
+	case reflect.Int, reflect.Int8, reflect.Int16, reflect.Int32, reflect.Int64:
+		if before, after, found := strings.Cut(args[0], ","); found {
+			b, _ := strconv.ParseInt(before, 10, 64)
+			a, _ := strconv.ParseInt(after, 10, 64)
+			val := f.Val.Int()
+			return val >= b && val <= a
+		}
+	case reflect.Uint, reflect.Uint8, reflect.Uint16, reflect.Uint32, reflect.Uint64:
+		if before, after, found := strings.Cut(args[0], ","); found {
+			b, _ := strconv.ParseUint(before, 10, 64)
+			a, _ := strconv.ParseUint(after, 10, 64)
+			val := f.Val.Uint()
+			return val >= b && val <= a
+		}
+	case reflect.Float32, reflect.Float64:
+		if before, after, found := strings.Cut(args[0], ","); found {
+			b, _ := strconv.ParseFloat(before, 64)
+			a, _ := strconv.ParseFloat(after, 64)
+			val := f.Val.Float()
+			return val >= b && val <= a
 		}
 	}
 	return false
