@@ -22,19 +22,22 @@ v.Use("lt_field", func(f *validate.Field, args ...string) bool {
 示例：
 ```
 Account  string `validate:"empty=false & format=email >邮箱格式错误"`
-Age            int    `validate:"eq=0 | section=10,100 >年龄需要大于10小于100"`
+Age            int    `validate:"eq=0 | o_interval=10,100 >年龄需要大于10小于100"`
 ```
 
 支持比较运算:
 等于： eq=6   
 大于：gt=6 
+大于等于：gte=6 
 小于：lt=6
+小于等于：lte=6
 
 支持包含验证
 包含：in=1,0
 
 支持区间验证
-区间：section=0,100  大于0小于100
+开区间open interval：o_interval=0,100  大于0小于100
+闭区间closed interval：c_interval=0,100  大于等于0小于等于100
 
 支持字段比较
 比较字段 eq_field
@@ -67,7 +70,7 @@ func main() {
 	data := struct {
 		Account string `validate:"empty=false & format=email > 邮箱格式错误"`
 		Name    string `validate:"empty=true | gt=4 > 字符必须大于4个"`
-		Age     int    `validate:"section=10,100 > 年龄需要大于10小于100"`
+		Age     int    `validate:"o_interval=10,100 > 年龄需要大于10小于100"`
 		Mobile  string `validate:"format=cn_mobile > 手机格式错误"`
 		Status  int    `validate:"in=0,1 >状态值错误"`
 	}{
@@ -100,9 +103,9 @@ func main() {
 	v := validate.New()
 	data := struct {
 		Account        string `validate:"empty=false & format=email >邮箱格式错误"`
-		Name           string `validate:"empty=true | gt=4 >字符必须大于4个"`
+		Name           string `validate:"empty=true | gte=4 >字符必须大于等于4个"`
 		FirstName      string `validate:"lt_field=Name > 姓名必须小于全名"`
-		Age            int    `validate:"eq=0 | section=10,100 >年龄需要大于10小于100"`
+		Age            int    `validate:"eq=0 | c_interval=10,100 >年龄需要大于等于10小于等于100"`
 		Password       string `validate:"gt=6>密码长度需要大于6"`
 		PasswordRepeat string `validate:"eq_field=Password>两次密码不相同"`
 	}{

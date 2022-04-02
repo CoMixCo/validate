@@ -21,16 +21,16 @@ var formatFunc = map[string]CallFunc{
  * 表达式比较函数
  */
 var expFunc = map[string]CallFunc{
-	"gt":              gt,
-	"gte":             gte,
-	"eq":              eq,
-	"lt":              lt,
-	"lte":             lte,
-	"empty":           empty,
-	"open_interval":   open_interval,
-	"closed_interval": closed_interval,
-	"in":              in,
-	"eq_field":        eq_field,
+	"gt":         gt,
+	"gte":        gte,
+	"eq":         eq,
+	"lt":         lt,
+	"lte":        lte,
+	"empty":      empty,
+	"o_interval": o_interval,
+	"c_interval": c_interval,
+	"in":         in,
+	"eq_field":   eq_field,
 }
 
 func gt(f *Field, args ...string) bool {
@@ -219,7 +219,7 @@ func in(f *Field, args ...string) bool {
 /**
  * 数字：开区间 open_interval=min,max  min<val<max
  */
-func open_interval(f *Field, args ...string) bool {
+func o_interval(f *Field, args ...string) bool {
 	switch f.Kind {
 	case reflect.Int, reflect.Int8, reflect.Int16, reflect.Int32, reflect.Int64:
 		if before, after, found := strings.Cut(args[0], ","); found {
@@ -249,7 +249,7 @@ func open_interval(f *Field, args ...string) bool {
 /**
  * 数字：闭区间 closed_interval=min,max  min<=val<=max
  */
-func closed_interval(f *Field, args ...string) bool {
+func c_interval(f *Field, args ...string) bool {
 	switch f.Kind {
 	case reflect.Int, reflect.Int8, reflect.Int16, reflect.Int32, reflect.Int64:
 		if before, after, found := strings.Cut(args[0], ","); found {
