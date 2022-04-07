@@ -15,6 +15,7 @@ type CallFunc func(f *Field, args ...string) bool
 var formatFunc = map[string]CallFunc{
 	"email":     email,
 	"cn_mobile": cn_mobile,
+	"url":       url,
 }
 
 /**
@@ -277,7 +278,8 @@ func c_interval(f *Field, args ...string) bool {
 }
 
 /**
- * 字符串
+ * 格式化：邮箱
+ * 适用类型：字符串
  */
 func email(f *Field, args ...string) bool {
 	switch f.Kind {
@@ -289,12 +291,26 @@ func email(f *Field, args ...string) bool {
 }
 
 /**
- * 字符串
+ * 格式化：中国手机
+ * 适用类型：字符串
  */
 func cn_mobile(f *Field, args ...string) bool {
 	switch f.Kind {
 	case reflect.String:
 		reg := regexp.MustCompile(`^((13[0-9])|(14[5,7])|(15[0-3,5-9])|(17[0,3,5-8])|(18[0-9])|166|198|199|(147))\d{8}$`)
+		return reg.MatchString(f.Val.String())
+	}
+	return false
+}
+
+/**
+ * 格式化：网址
+ * 使用类型：字符串
+ */
+func url(f *Field, args ...string) bool {
+	switch f.Kind {
+	case reflect.String:
+		reg := regexp.MustCompile(`(http|https):\/\/[\w\-_]+(\.[\w\-_]+)+([\w\-\.,@?^=%&:/~\+#]*[\w\-\@?^=%&/~\+#])?`)
 		return reg.MatchString(f.Val.String())
 	}
 	return false
