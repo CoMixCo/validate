@@ -16,6 +16,7 @@ var formatFunc = map[string]CallFunc{
 	"email":     email,
 	"cn_mobile": cn_mobile,
 	"url":       url,
+	"safe_str":  url,
 }
 
 /**
@@ -284,7 +285,7 @@ func c_interval(f *Field, args ...string) bool {
 func email(f *Field, args ...string) bool {
 	switch f.Kind {
 	case reflect.String:
-		reg := regexp.MustCompile(`\w+([-+.]\w+)*@\w+([-.]\w+)*\.\w+([-.]\w+)*`)
+		reg := regexp.MustCompile(`^\w+([-+.]\w+)*@\w+([-.]\w+)*\.\w+([-.]\w+)*$`)
 		return reg.MatchString(f.Val.String())
 	}
 	return false
@@ -310,7 +311,7 @@ func cn_mobile(f *Field, args ...string) bool {
 func url(f *Field, args ...string) bool {
 	switch f.Kind {
 	case reflect.String:
-		reg := regexp.MustCompile(`(http|https):\/\/[\w\-_]+(\.[\w\-_]+)+([\w\-\.,@?^=%&:/~\+#]*[\w\-\@?^=%&/~\+#])?`)
+		reg := regexp.MustCompile(`^(http|https):\/\/[\w\-_]+(\.[\w\-_]+)+([\w\-\.,@?^=%&:/~\+#]*[\w\-\@?^=%&/~\+#])?$`)
 		return reg.MatchString(f.Val.String())
 	}
 	return false
@@ -330,6 +331,18 @@ func eq_field(f *Field, args ...string) bool {
 		return f.Val.Float() == compare_val.Float()
 	case reflect.String:
 		return f.Val.String() == compare_val.String()
+	}
+	return false
+}
+
+/**
+ * 安全的字符串
+ */
+func safe_str(f *Field, args ...string) bool {
+	switch f.Kind {
+	case reflect.String:
+		reg := regexp.MustCompile(`^[A-Za-z0-9_]+$`)
+		return reg.MatchString(f.Val.String())
 	}
 	return false
 }

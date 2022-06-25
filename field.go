@@ -15,13 +15,13 @@ type Field struct {
 	Msg       string
 }
 
-func NewField(s reflect.Value, n string, v reflect.Value, k reflect.Kind, t string) *Field {
+func NewField(struct_value reflect.Value, field_name string, field_val reflect.Value, field_kind reflect.Kind, field_tag string) *Field {
 	return &Field{
-		RefStruct: s,
-		Name:      n,
-		Val:       v,
-		Kind:      k,
-		Tag:       t,
+		RefStruct: struct_value,
+		Name:      field_name,
+		Val:       field_val,
+		Kind:      field_kind,
+		Tag:       field_tag,
 		State:     false,
 	}
 }

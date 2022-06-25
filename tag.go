@@ -38,20 +38,20 @@ func (t *Tag) GetExp() Or {
 	return t.exp
 }
 
-//eg: empty=true | empty=false&len>0
-func OrExp(str string) Or {
+//exp_str eg: empty=true | empty=false&len>0
+func OrExp(exp_str string) Or {
 	or := Or{}
-	slice := strings.Split(str, "|")
+	slice := strings.Split(exp_str, "|")
 	for _, part := range slice {
 		or = append(or, AndExp(part))
 	}
 	return or
 }
 
-// eg: empty=false&len>0
-func AndExp(str string) And {
+// eg: empty=false & gt=5
+func AndExp(exp_str string) And {
 	and := And{}
-	slice := strings.Split(str, "&")
+	slice := strings.Split(exp_str, "&")
 	for _, part := range slice {
 		if b, a, f := strings.Cut(part, "="); f {
 			and[b] = a
