@@ -20,7 +20,8 @@ func TestUrl(t *testing.T) {
 }
 
 func TestSafeStr(t *testing.T) {
-	str := "P234234_2323"
+	//str := "P234234_2323"
+	str := "mpay_6056002"
 	refStr := reflect.ValueOf(str)
 
 	f := NewField(refStr, "attach", refStr, refStr.Kind(), "aaa")

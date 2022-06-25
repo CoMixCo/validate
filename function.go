@@ -16,7 +16,7 @@ var formatFunc = map[string]CallFunc{
 	"email":     email,
 	"cn_mobile": cn_mobile,
 	"url":       url,
-	"safe_str":  url,
+	"safe_str":  safe_str,
 }
 
 /**
