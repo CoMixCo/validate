@@ -48,7 +48,7 @@ Age            int    `validate:"eq=0 | o_interval=10,100 >年龄需要大于10�
 Password       string `validate:"gt=6>密码长度需要大于6"`
 PasswordRepeat string `validate:"eq_field=Password>两次密码不相同"`
 ```
-格式化校验：
+字符串格式化校验：
 format: email
 format: cn_mobile
 format: url
