@@ -1,4 +1,4 @@
-v1版本：
+v1+版本：
 自定义验证标签：v.Use(tagName string, func(f *validate.Field, args ...string) bool)
 示例：
 ```
@@ -21,11 +21,11 @@ v.Use("lt_field", func(f *validate.Field, args ...string) bool {
 支持逻辑运算 且[&] 和 或[|]
 示例：
 ```
-Account  string `validate:"empty=false & format=email >邮箱格式错误"`
+Account  string `validate:"format=email >邮箱格式错误"`
 Age            int    `validate:"eq=0 | o_interval=10,100 >年龄需要大于10小于100"`
 ```
 
-支持比较运算:
+支持比较运算, 字符串比较长度，数字比较大小:
 等于： eq=6   
 大于：gt=6 
 大于等于：gte=6 
@@ -35,7 +35,9 @@ Age            int    `validate:"eq=0 | o_interval=10,100 >年龄需要大于10�
 支持包含验证
 包含：in=1,0
 
-支持区间验证
+支持字符串是否为空验证: empty=true
+
+支持数字区间验证
 开区间open interval：o_interval=0,100  大于0小于100
 闭区间closed interval：c_interval=0,100  大于等于0小于等于100
 
@@ -48,7 +50,11 @@ PasswordRepeat string `validate:"eq_field=Password>两次密码不相同"`
 ```
 格式化校验：
 format: email
-format:cn_mobile
+format: cn_mobile
+format: url
+format: safe_str
+format: trim_space
+
 ```
 Account string `validate:"format=email > 邮箱格式错误"`
 Mobile  string `validate:"format=cn_mobile > 手机格式错误"`
