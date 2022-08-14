@@ -13,10 +13,11 @@ type CallFunc func(f *Field, args ...string) bool
  * 格式化函数
  */
 var formatFunc = map[string]CallFunc{
-	"email":     email,
-	"cn_mobile": cn_mobile,
-	"url":       url,
-	"safe_str":  safe_str,
+	"email":      email,
+	"cn_mobile":  cn_mobile,
+	"url":        url,
+	"safe_str":   safe_str,
+	"trim_space": trim_space,
 }
 
 /**
@@ -345,4 +346,16 @@ func safe_str(f *Field, args ...string) bool {
 		return reg.MatchString(f.Val.String())
 	}
 	return false
+}
+
+/**
+ * 过滤首尾空格
+ */
+func trim_space(f *Field, args ...string) bool {
+	switch f.Kind {
+	case reflect.String:
+		trim_str := strings.TrimSpace(f.Val.String())
+		f.RefStruct.FieldByName(f.Name).SetString(trim_str)
+	}
+	return true
 }

@@ -68,7 +68,7 @@ func main() {
 
 	v := validate.New()
 	data := struct {
-		Account string `validate:"empty=false & format=email > 邮箱格式错误"`
+		Account string `validate:"format=email > 邮箱格式错误"`
 		Name    string `validate:"empty=true | gt=4 > 字符必须大于4个"`
 		Age     int    `validate:"o_interval=10,100 > 年龄需要大于10小于100"`
 		Mobile  string `validate:"format=cn_mobile > 手机格式错误"`
@@ -102,7 +102,7 @@ func main() {
 	validate.DebugModel = true
 	v := validate.New()
 	data := struct {
-		Account        string `validate:"empty=false & format=email >邮箱格式错误"`
+		Account        string `validate:"format=email >邮箱格式错误"`
 		Name           string `validate:"empty=true | gte=4 >字符必须大于等于4个"`
 		FirstName      string `validate:"lt_field=Name > 姓名必须小于全名"`
 		Age            int    `validate:"eq=0 | c_interval=10,100 >年龄需要大于等于10小于等于100"`

@@ -43,16 +43,16 @@ func (f *Field) Parse() *Field {
 				}
 			}
 			// and 条件有false就不满足
-			if f.State == false {
+			if !f.State {
 				break
 			}
 		}
 		// or条件有true就满足
-		if f.State == true {
+		if f.State {
 			break
 		}
 	}
-	if f.State == false {
+	if !f.State {
 		if DebugModel {
 			f.Msg = fmt.Sprintf("字段:%s 传值:%v 校验:%s", f.Name, f.Val, t.GetMsg())
 		} else {
