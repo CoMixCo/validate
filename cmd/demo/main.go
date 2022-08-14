@@ -10,6 +10,7 @@ import (
 func main() {
 	v := validate.New()
 
+	//自定义格式化函数
 	v.UseFormat("date", func(f *validate.Field) bool {
 		switch f.Kind {
 		case reflect.String:
