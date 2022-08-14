@@ -13,12 +13,15 @@ type Tag struct {
 }
 
 func NewTag(str string) *Tag {
-	return &Tag{
+	t := &Tag{
 		str: str,
 	}
+	t.parse()
+	return t
 }
 
-func (t *Tag) Parse() *Tag {
+//解析tag的表达式
+func (t *Tag) parse() *Tag {
 	//干掉所有空格
 	if b, a, f := strings.Cut(t.str, ">"); f {
 		t.msg = a

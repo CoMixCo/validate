@@ -100,7 +100,8 @@ package main
 
 import (
 	"fmt"
-	"utils/validate"
+	"time"
+	"validate"
 )
 
 func main() {
@@ -114,6 +115,7 @@ func main() {
 		Age            int    `validate:"eq=0 | c_interval=10,100 >年龄需要大于等于10小于等于100"`
 		Password       string `validate:"gt=6>密码长度需要大于6"`
 		PasswordRepeat string `validate:"eq_field=Password>两次密码不相同"`
+		DateStart string `validate:"format=date>日期格式错误"`
 	}{
 		Account:        "even@qq.com",
 		Name:           "even cc",
@@ -121,9 +123,10 @@ func main() {
 		Age:            0,
 		Password:       "1qaz@2wsx",
 		PasswordRepeat: "1qaz@2wsx1",
+		DateStart: "2022-05",
 	}
-	v.Use("lt_field", func(f *validate.Field, args ...string) bool {
-		compare_val := f.RefStruct.FieldByName(args[0])
+	v.UseExp("lt_field", func(f *validate.Field, arg string) bool {
+		compare_val := f.RefStruct.FieldByName(arg)
 		switch f.Kind {
 		case reflect.Int, reflect.Int8, reflect.Int16, reflect.Int32, reflect.Int64:
 			return f.Val.Int() < compare_val.Int()
@@ -133,6 +136,15 @@ func main() {
 			return f.Val.Float() < compare_val.Float()
 		case reflect.String:
 			return f.Val.Len() < compare_val.Len()
+		}
+		return false
+	})
+	v.UseFormat("date", func(f *validate.Field) bool {
+		switch f.Kind {
+		case reflect.String:
+			if _, err := time.Parse("2006-01-02", f.Val.String()); err == nil {
+				return true
+			}
 		}
 		return false
 	})

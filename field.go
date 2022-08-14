@@ -16,7 +16,7 @@ type Field struct {
 }
 
 func NewField(struct_value reflect.Value, field_name string, field_val reflect.Value, field_kind reflect.Kind, field_tag string) *Field {
-	return &Field{
+	f := &Field{
 		RefStruct: struct_value,
 		Name:      field_name,
 		Val:       field_val,
@@ -24,11 +24,13 @@ func NewField(struct_value reflect.Value, field_name string, field_val reflect.V
 		Tag:       field_tag,
 		State:     false,
 	}
+	f.parse()
+	return f
 }
 
-//exp:[map[empty:true] map[format:email gt:3]]
-func (f *Field) Parse() *Field {
-	t := NewTag(f.Tag).Parse()
+// exp:[map[empty:true] map[format:email gt:3]]
+func (f *Field) parse() *Field {
+	t := NewTag(f.Tag)
 	exp := t.GetExp()
 
 	for _, part := range exp {

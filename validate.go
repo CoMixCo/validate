@@ -16,12 +16,12 @@ func New() *Validate {
 	}
 }
 
-func (v *Validate) Use(name string, f CallFunc) {
-	if name == "format" {
-		formatFunc[name] = f
-	} else {
-		expFunc[name] = f
-	}
+func (v *Validate) UseExp(name string, f ExpFunc) {
+	expFunc[name] = f
+}
+
+func (v *Validate) UseFormat(name string, f FormatFunc) {
+	formatFunc[name] = f
 }
 
 func (v *Validate) Struct(s interface{}) *Validate {
@@ -36,7 +36,7 @@ func (v *Validate) Struct(s interface{}) *Validate {
 	for i := 0; i < struct_type.NumField(); i++ {
 		field_type := struct_type.Field(i)
 		if validate_tag, ok := field_type.Tag.Lookup("validate"); ok {
-			f := NewField(struct_value, field_type.Name, struct_value.Field(i), field_type.Type.Kind(), validate_tag).Parse()
+			f := NewField(struct_value, field_type.Name, struct_value.Field(i), field_type.Type.Kind(), validate_tag)
 			if !f.State {
 				v.errors[f.Name] = f
 			}
