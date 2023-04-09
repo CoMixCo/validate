@@ -343,7 +343,7 @@ func url(f *Field) bool {
 func safe_str(f *Field) bool {
 	switch f.Kind {
 	case reflect.String:
-		reg := regexp.MustCompile(`^[A-Za-z0-9_]+$`)
+		reg := regexp.MustCompile(`^[A-Za-z0-9_\.]+$`)
 		return reg.MatchString(f.Val.String())
 	}
 	return false
