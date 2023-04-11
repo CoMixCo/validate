@@ -56,9 +56,9 @@ func (f *Field) parse() *Field {
 	}
 	if !f.State {
 		if DebugModel {
-			f.Msg = fmt.Sprintf("字段:%s 传值:%v 校验:%s", f.Name, f.Val, t.GetMsg())
+			f.Msg = fmt.Sprintf("field:%s value:%v verify:%s", f.Name, f.Val, t.GetMsg())
 		} else {
-			f.Msg = fmt.Sprintf("字段:%s 校验:%s", f.Name, t.GetMsg())
+			f.Msg = fmt.Sprintf("field:%s verify:%s", f.Name, t.GetMsg())
 		}
 
 	}
