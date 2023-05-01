@@ -16,12 +16,12 @@ func NewTag(str string) *Tag {
 	t := &Tag{
 		str: str,
 	}
-	t.parse()
+	t.logicOperation()
 	return t
 }
 
 //解析tag的表达式
-func (t *Tag) parse() *Tag {
+func (t *Tag) logicOperation() *Tag {
 	//干掉所有空格
 	if b, a, f := strings.Cut(t.str, ">"); f {
 		t.msg = strings.TrimSpace(a)
