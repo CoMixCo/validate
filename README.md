@@ -112,7 +112,7 @@ func main() {
 		Age            int    `validate:"eq=0 | gt=10 & lt=100 >年龄需要大于等于10小于等于100"`
 		Password       string `validate:"gte=6>密码长度需要大于6"`
 		PasswordRepeat string `validate:"eq_field=Password>两次密码不相同"`
-		DateStart string `validate:"format=date>日期格式错误"`
+		DateStart      string `validate:"format=date>日期格式错误"`
 	}{
 		Account:        "even@qq.com",
 		Name:           "even cc",
@@ -120,7 +120,7 @@ func main() {
 		Age:            0,
 		Password:       "1qaz@2wsx",
 		PasswordRepeat: "1qaz@2wsx1",
-		DateStart: "2022-05",
+		DateStart:      "2022-05",
 	}
 	v.AddCompareMethod("lt_field", func(f *validate.Field, arg string) bool {
 		compare_val := f.RefStruct.FieldByName(arg)
