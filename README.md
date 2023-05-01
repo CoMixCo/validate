@@ -1,8 +1,9 @@
 v1+版本：
-自定义验证标签：v.Use(tagName string, func(f *validate.Field, args ...string) bool)
+自定义比较标签：v.AddCompareMethod(tagName string, func(f *validate.Field, args ...string) bool)
+自定义格式化标签：v.AddFormatMethod(tagName string, func(f *validate.Field, args ...string) bool)
 示例：
 ```
-v.Use("lt_field", func(f *validate.Field, args ...string) bool {
+v.AddCompareMethod("lt_field", func(f *validate.Field, args ...string) bool {
 		compare_val := f.RefStruct.FieldByName(args[0])
 		switch f.Kind {
 		case reflect.Int, reflect.Int8, reflect.Int16, reflect.Int32, reflect.Int64:
@@ -21,8 +22,8 @@ v.Use("lt_field", func(f *validate.Field, args ...string) bool {
 支持逻辑运算 且[&] 和 或[|]
 示例：
 ```
-Account  string `validate:"format=email >邮箱格式错误"`
-Age            int    `validate:"eq=0 | o_interval=10,100 >年龄需要大于10小于100"`
+Account  string `validate:"format=email & lt=30 >邮箱格式错误"`
+Age      int    `validate:"eq=0 | gte=10 & lte=100 >年龄需要大于等于10小于等于100"`
 ```
 
 支持比较运算, 字符串比较长度，数字比较大小:
@@ -32,14 +33,8 @@ Age            int    `validate:"eq=0 | o_interval=10,100 >年龄需要大于10�
 小于：lt=6
 小于等于：lte=6
 
-支持包含验证
+支持包含比较
 包含：in=1,0
-
-支持字符串是否为空验证: empty=true
-
-支持数字区间验证
-开区间open interval：o_interval=0,100  大于0小于100
-闭区间closed interval：c_interval=0,100  大于等于0小于等于100
 
 支持字段比较
 比较字段 eq_field
@@ -54,6 +49,8 @@ format: cn_mobile
 format: url
 format: safe_str
 format: trim_space
+format: date
+format: date_time
 
 ```
 Account string `validate:"format=email > 邮箱格式错误"`
@@ -75,8 +72,8 @@ func main() {
 	v := validate.New()
 	data := struct {
 		Account string `validate:"format=email > 邮箱格式错误"`
-		Name    string `validate:"empty=true | gt=4 > 字符必须大于4个"`
-		Age     int    `validate:"o_interval=10,100 > 年龄需要大于10小于100"`
+		Name    string `validate:"gt=4 > 字符必须大于4个"`
+		Age     int    `validate:"gt=10 & lt=100 > 年龄需要大于10小于100"`
 		Mobile  string `validate:"format=cn_mobile > 手机格式错误"`
 		Status  int    `validate:"in=0,1 >状态值错误"`
 	}{
@@ -110,10 +107,10 @@ func main() {
 	v := validate.New()
 	data := struct {
 		Account        string `validate:"format=email >邮箱格式错误"`
-		Name           string `validate:"empty=true | gte=4 >字符必须大于等于4个"`
-		FirstName      string `validate:"lt_field=Name > 姓名必须小于全名"`
-		Age            int    `validate:"eq=0 | c_interval=10,100 >年龄需要大于等于10小于等于100"`
-		Password       string `validate:"gt=6>密码长度需要大于6"`
+		Name           string `validate:"gte=4 >字符必须大于等于4个"`
+		FirstName      string `validate:"lt_field=Name >姓氏长度需要小于名字长度"`
+		Age            int    `validate:"eq=0 | gt=10 & lt=100 >年龄需要大于等于10小于等于100"`
+		Password       string `validate:"gte=6>密码长度需要大于6"`
 		PasswordRepeat string `validate:"eq_field=Password>两次密码不相同"`
 		DateStart string `validate:"format=date>日期格式错误"`
 	}{
@@ -125,7 +122,7 @@ func main() {
 		PasswordRepeat: "1qaz@2wsx1",
 		DateStart: "2022-05",
 	}
-	v.UseExp("lt_field", func(f *validate.Field, arg string) bool {
+	v.AddCompareMethod("lt_field", func(f *validate.Field, arg string) bool {
 		compare_val := f.RefStruct.FieldByName(arg)
 		switch f.Kind {
 		case reflect.Int, reflect.Int8, reflect.Int16, reflect.Int32, reflect.Int64:
@@ -139,7 +136,7 @@ func main() {
 		}
 		return false
 	})
-	v.UseFormat("date", func(f *validate.Field) bool {
+	v.AddFormatMethod("date", func(f *validate.Field) bool {
 		switch f.Kind {
 		case reflect.String:
 			if _, err := time.Parse("2006-01-02", f.Val.String()); err == nil {
