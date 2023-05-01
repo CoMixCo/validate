@@ -36,6 +36,7 @@ format: date_time
 ```
 
 支持自定义比较方法：v.AddCompareMethod(tagName string, func(f *validate.Field, args ...string) bool)
+
 支持自定义格式化方法：v.AddFormatMethod(tagName string, func(f *validate.Field, args ...string) bool)
 示例：
 ```
