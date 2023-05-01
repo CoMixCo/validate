@@ -35,12 +35,12 @@ format=date
 format=date_time
 ```
 
-支持自定义比较方法：v.AddCompareMethod(tagName string, func(f *validate.Field, args ...string) bool)
+支持自定义比较方法：v.AddCompareMethod(tagName string, func(f *element.Field, args ...string) bool)
 
-支持自定义格式化方法：v.AddFormatMethod(tagName string, func(f *validate.Field, args ...string) bool)
+支持自定义格式化方法：v.AddFormatMethod(tagName string, func(f *element.Field, args ...string) bool)
 示例：
 ```
-v.AddCompareMethod("lt_field", func(f *validate.Field, args ...string) bool {
+v.AddCompareMethod("lt_field", func(f *element.Field, args ...string) bool {
 		compare_val := f.RefStruct.FieldByName(args[0])
 		switch f.Kind {
 		case reflect.Int, reflect.Int8, reflect.Int16, reflect.Int32, reflect.Int64:
@@ -63,7 +63,8 @@ package main
 
 import (
 	"fmt"
-	"utils/validate"
+	"validate"
+	"validate/element"
 )
 
 func main() {
@@ -98,6 +99,7 @@ import (
 	"fmt"
 	"time"
 	"validate"
+	"validate/element"
 )
 
 func main() {
@@ -121,7 +123,7 @@ func main() {
 		PasswordRepeat: "1qaz@2wsx1",
 		DateStart:      "2022-05",
 	}
-	v.AddCompareMethod("lt_field", func(f *validate.Field, arg string) bool {
+	v.AddCompareMethod("lt_field", func(f *element.Field, arg string) bool {
 		compare_val := f.RefStruct.FieldByName(arg)
 		switch f.Kind {
 		case reflect.Int, reflect.Int8, reflect.Int16, reflect.Int32, reflect.Int64:
@@ -135,7 +137,7 @@ func main() {
 		}
 		return false
 	})
-	v.AddFormatMethod("date", func(f *validate.Field) bool {
+	v.AddFormatMethod("date", func(f *element.Field) bool {
 		switch f.Kind {
 		case reflect.String:
 			if _, err := time.Parse("2006-01-02", f.Val.String()); err == nil {
