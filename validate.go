@@ -43,7 +43,7 @@ func (v *Validate) Struct(s interface{}) *Validate {
 
 /**
  * 解析表达式逻辑
- * exp:[map[empty:true] map[format:email gt:3]]
+ * eg: exp=[map[eq:0], map[format:url, lte:255]]
  */
 func (v *Validate) Parse(f *element.Field) *element.Field {
 	t := element.NewTag(f.Tag)
@@ -60,12 +60,12 @@ func (v *Validate) Parse(f *element.Field) *element.Field {
 					f.State = call(f, v)
 				}
 			}
-			// and 条件有false就不满足
+			// and 条件有返回false就中断后续逻辑判断
 			if !f.State {
 				break
 			}
 		}
-		// or条件有true就满足
+		// or条件有返回true就中断后续逻辑判断
 		if f.State {
 			break
 		}
