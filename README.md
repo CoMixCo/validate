@@ -26,13 +26,13 @@
 
 支持字符串格式化校验：
 ```
-format: email
-format: cn_mobile
-format: url
-format: safe_str
-format: trim_space
-format: date
-format: date_time
+format=email
+format=cn_mobile
+format=url
+format=safe_str
+format=trim_space
+format=date
+format=date_time
 ```
 
 支持自定义比较方法：v.AddCompareMethod(tagName string, func(f *validate.Field, args ...string) bool)
