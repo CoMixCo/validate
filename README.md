@@ -1,6 +1,42 @@
-v1+版本：
-自定义比较标签：v.AddCompareMethod(tagName string, func(f *validate.Field, args ...string) bool)
-自定义格式化标签：v.AddFormatMethod(tagName string, func(f *validate.Field, args ...string) bool)
+功能描述：
+
+支持逻辑运算 且[&] 和 或[|]
+```
+逻辑：eq=0 | gte=10 & lte=100
+```
+
+支持比较运算, 字符串比较长度，数字比较大小:
+```
+等于： eq=6   
+大于：gt=6 
+大于等于：gte=6 
+小于：lt=6
+小于等于：lte=6
+```
+
+支持包含比较
+```
+包含：in=1,0
+```
+
+支持字段比较
+```
+比较字段 eq_field=Passowrd
+```
+
+支持字符串格式化校验：
+```
+format: email
+format: cn_mobile
+format: url
+format: safe_str
+format: trim_space
+format: date
+format: date_time
+```
+
+支持自定义比较方法：v.AddCompareMethod(tagName string, func(f *validate.Field, args ...string) bool)
+支持自定义格式化方法：v.AddFormatMethod(tagName string, func(f *validate.Field, args ...string) bool)
 示例：
 ```
 v.AddCompareMethod("lt_field", func(f *validate.Field, args ...string) bool {
@@ -17,44 +53,6 @@ v.AddCompareMethod("lt_field", func(f *validate.Field, args ...string) bool {
 		}
 		return false
 	})
-```
-
-支持逻辑运算 且[&] 和 或[|]
-示例：
-```
-Account  string `validate:"format=email & lt=30 >邮箱格式错误"`
-Age      int    `validate:"eq=0 | gte=10 & lte=100 >年龄需要大于等于10小于等于100"`
-```
-
-支持比较运算, 字符串比较长度，数字比较大小:
-等于： eq=6   
-大于：gt=6 
-大于等于：gte=6 
-小于：lt=6
-小于等于：lte=6
-
-支持包含比较
-包含：in=1,0
-
-支持字段比较
-比较字段 eq_field
-示例：
-```
-Password       string `validate:"gt=6>密码长度需要大于6"`
-PasswordRepeat string `validate:"eq_field=Password>两次密码不相同"`
-```
-字符串格式化校验：
-format: email
-format: cn_mobile
-format: url
-format: safe_str
-format: trim_space
-format: date
-format: date_time
-
-```
-Account string `validate:"format=email > 邮箱格式错误"`
-Mobile  string `validate:"format=cn_mobile > 手机格式错误"`
 ```
 
 示例一：
