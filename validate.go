@@ -72,9 +72,9 @@ func (v *Validate) Parse(f *element.Field) *element.Field {
 	}
 	if !f.State {
 		if DebugModel {
-			f.Msg = fmt.Sprintf("field:%s value:%v verify:%s", element.SnakeString(f.Name), f.Val, t.GetMsg())
+			f.Msg = fmt.Sprintf("field:%s value:%v error:%s", element.SnakeString(f.Name), f.Val, t.GetMsg())
 		} else {
-			f.Msg = fmt.Sprintf("field:%s verify:%s", element.SnakeString(f.Name), t.GetMsg())
+			f.Msg = fmt.Sprintf("field:%s error:%s", element.SnakeString(f.Name), t.GetMsg())
 		}
 
 	}

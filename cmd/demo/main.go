@@ -2,25 +2,24 @@ package main
 
 import (
 	"fmt"
-	"reflect"
-	"time"
 	"utils/validate"
-	"utils/validate/element"
 )
 
 func main() {
 	v := validate.New()
 
 	//自定义格式化方法
-	v.AddFormatMethod("date", func(f *element.Field) bool {
-		switch f.Kind {
-		case reflect.String:
-			if _, err := time.Parse("2006-01-02", f.Val.String()); err == nil {
-				return true
+	/*
+		v.AddFormatMethod("date", func(f *element.Field) bool {
+			switch f.Kind {
+			case reflect.String:
+				if _, err := time.Parse("2006-01-02", f.Val.String()); err == nil {
+					return true
+				}
 			}
-		}
-		return false
-	})
+			return false
+		})
+	*/
 
 	data := struct {
 		Account   string `validate:"format=email > 邮箱格式错误"`
@@ -43,5 +42,5 @@ func main() {
 		}
 	}
 
-	fmt.Printf("%+v \n", data)
+	fmt.Printf("被验证数据为：%+v \n", data)
 }

@@ -24,7 +24,7 @@ func NewTag(str string) *Tag {
 func (t *Tag) parse() *Tag {
 	//干掉所有空格
 	if b, a, f := strings.Cut(t.str, ">"); f {
-		t.msg = a
+		t.msg = strings.TrimSpace(a)
 		t.expStr = strings.Replace(b, " ", "", -1)
 	} else {
 		t.expStr = strings.Replace(t.str, " ", "", -1)
