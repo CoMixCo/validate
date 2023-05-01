@@ -4,14 +4,15 @@ import (
 	"fmt"
 	"reflect"
 	"time"
-	"validate"
+	"utils/validate"
+	"utils/validate/element"
 )
 
 func main() {
 	v := validate.New()
 
-	//自定义格式化函数
-	v.UseFormat("date", func(f *validate.Field) bool {
+	//自定义格式化方法
+	v.AddFormatMethod("date", func(f *element.Field) bool {
 		switch f.Kind {
 		case reflect.String:
 			if _, err := time.Parse("2006-01-02", f.Val.String()); err == nil {

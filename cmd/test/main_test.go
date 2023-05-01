@@ -3,7 +3,7 @@ package main
 import (
 	"fmt"
 	"testing"
-	"validate"
+	"utils/validate"
 )
 
 func TestUrl(t *testing.T) {
