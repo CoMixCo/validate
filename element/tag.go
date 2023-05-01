@@ -20,7 +20,9 @@ func NewTag(str string) *Tag {
 	return t
 }
 
-//解析tag的表达式
+/**
+ * tag 的逻辑运算处理
+ */
 func (t *Tag) logicOperation() *Tag {
 	//干掉所有空格
 	if b, a, f := strings.Cut(t.str, ">"); f {
@@ -33,15 +35,24 @@ func (t *Tag) logicOperation() *Tag {
 	return t
 }
 
+/**
+ * 获取错误提示信息, 表达式>后面的字符串为错误提示信息
+ */
 func (t *Tag) GetMsg() string {
 	return t.msg
 }
 
+/**
+ * 获取表达式的map条件
+ */
 func (t *Tag) GetExp() Or {
 	return t.exp
 }
 
-//exp_str eg: empty=true | empty=false&len>0
+/**
+ * or表达式
+ * eg: eq=0 | eq=1
+ */
 func OrExp(exp_str string) Or {
 	or := Or{}
 	slice := strings.Split(exp_str, "|")
@@ -51,7 +62,10 @@ func OrExp(exp_str string) Or {
 	return or
 }
 
-// eg: empty=false & gt=5
+/**
+ * and 表达式
+ * eg: format=url & lte=255
+ */
 func AndExp(exp_str string) And {
 	and := And{}
 	slice := strings.Split(exp_str, "&")
