@@ -24,7 +24,7 @@ func main() {
 	data := struct {
 		Account   string `validate:"format=email > 邮箱格式错误"`
 		Name      string `validate:"empty=true | format=trim_space & gt=4 > 字符必须大于4个"`
-		Age       int    `validate:"o_interval=10,100 > 年龄需要大于10小于100"`
+		Age       int    `validate:"gte=10 & lte=100 > 年龄需要大于10小于100"`
 		Mobile    string `validate:"format=cn_mobile > 手机格式错误"`
 		Status    int    `validate:"in=0,1 >状态值错误"`
 		DateStart string `validate:"format=date>日期格式错误"`

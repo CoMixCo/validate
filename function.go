@@ -25,18 +25,19 @@ var formatFunc = map[string]FormatFunc{
  * 表达式比较函数
  */
 var expFunc = map[string]ExpFunc{
-	"gt":         gt,
-	"gte":        gte,
-	"eq":         eq,
-	"lt":         lt,
-	"lte":        lte,
-	"empty":      empty,
-	"o_interval": o_interval,
-	"c_interval": c_interval,
-	"in":         in,
-	"eq_field":   eq_field,
+	"gt":       gt,
+	"gte":      gte,
+	"eq":       eq,
+	"lt":       lt,
+	"lte":      lte,
+	"in":       in,
+	"eq_field": eq_field,
 }
 
+/**
+ * 适用数字和字符串, 数字比大小，字符串比长度
+ * eg: gt=10  大于10
+ */
 func gt(f *Field, arg string) bool {
 	switch f.Kind {
 	case reflect.Int, reflect.Int8, reflect.Int16, reflect.Int32, reflect.Int64:
@@ -59,6 +60,10 @@ func gt(f *Field, arg string) bool {
 	return false
 }
 
+/**
+ * 适用数字和字符串, 数字比大小，字符串比长度
+ * eg: gte=10  大于等于10
+ */
 func gte(f *Field, arg string) bool {
 	switch f.Kind {
 	case reflect.Int, reflect.Int8, reflect.Int16, reflect.Int32, reflect.Int64:
@@ -82,7 +87,8 @@ func gte(f *Field, arg string) bool {
 }
 
 /**
- * 适用数字和字符串
+ * 适用数字和字符串, 数字比大小，字符串比长度
+ * eg: eq=10  等于10
  */
 func eq(f *Field, arg string) bool {
 	switch f.Kind {
@@ -107,7 +113,8 @@ func eq(f *Field, arg string) bool {
 }
 
 /**
- * 适用数字和字符串
+ * 适用数字和字符串, 数字比大小，字符串比长度
+ * eg: lt=10  小于10
  */
 func lt(f *Field, arg string) bool {
 	switch f.Kind {
@@ -132,7 +139,8 @@ func lt(f *Field, arg string) bool {
 }
 
 /**
- * 适用数字和字符串
+ * 适用数字和字符串, 数字比大小，字符串比长度
+ * eg: lte=10  小于等于10
  */
 func lte(f *Field, arg string) bool {
 	switch f.Kind {
@@ -157,22 +165,8 @@ func lte(f *Field, arg string) bool {
 }
 
 /**
- * 字符串
- */
-func empty(f *Field, arg string) bool {
-	switch f.Kind {
-	case reflect.String:
-		if arg == "true" {
-			return f.Val.Len() == 0
-		} else {
-			return f.Val.Len() > 0
-		}
-	}
-	return false
-}
-
-/**
- * 适用数字和字符串 枚举 in=1,0  in=active,frozen
+ * 适用数字和字符串 枚举
+ * eg: in=1,0  in=active,frozen
  */
 func in(f *Field, arg string) bool {
 	switch f.Kind {
@@ -221,67 +215,8 @@ func in(f *Field, arg string) bool {
 }
 
 /**
- * 数字：开区间 open_interval=min,max  min<val<max
- */
-func o_interval(f *Field, arg string) bool {
-	switch f.Kind {
-	case reflect.Int, reflect.Int8, reflect.Int16, reflect.Int32, reflect.Int64:
-		if before, after, found := strings.Cut(arg, ","); found {
-			b, _ := strconv.ParseInt(before, 10, 64)
-			a, _ := strconv.ParseInt(after, 10, 64)
-			val := f.Val.Int()
-			return val > b && val < a
-		}
-	case reflect.Uint, reflect.Uint8, reflect.Uint16, reflect.Uint32, reflect.Uint64:
-		if before, after, found := strings.Cut(arg, ","); found {
-			b, _ := strconv.ParseUint(before, 10, 64)
-			a, _ := strconv.ParseUint(after, 10, 64)
-			val := f.Val.Uint()
-			return val > b && val < a
-		}
-	case reflect.Float32, reflect.Float64:
-		if before, after, found := strings.Cut(arg, ","); found {
-			b, _ := strconv.ParseFloat(before, 64)
-			a, _ := strconv.ParseFloat(after, 64)
-			val := f.Val.Float()
-			return val > b && val < a
-		}
-	}
-	return false
-}
-
-/**
- * 数字：闭区间 closed_interval=min,max  min<=val<=max
- */
-func c_interval(f *Field, arg string) bool {
-	switch f.Kind {
-	case reflect.Int, reflect.Int8, reflect.Int16, reflect.Int32, reflect.Int64:
-		if before, after, found := strings.Cut(arg, ","); found {
-			b, _ := strconv.ParseInt(before, 10, 64)
-			a, _ := strconv.ParseInt(after, 10, 64)
-			val := f.Val.Int()
-			return val >= b && val <= a
-		}
-	case reflect.Uint, reflect.Uint8, reflect.Uint16, reflect.Uint32, reflect.Uint64:
-		if before, after, found := strings.Cut(arg, ","); found {
-			b, _ := strconv.ParseUint(before, 10, 64)
-			a, _ := strconv.ParseUint(after, 10, 64)
-			val := f.Val.Uint()
-			return val >= b && val <= a
-		}
-	case reflect.Float32, reflect.Float64:
-		if before, after, found := strings.Cut(arg, ","); found {
-			b, _ := strconv.ParseFloat(before, 64)
-			a, _ := strconv.ParseFloat(after, 64)
-			val := f.Val.Float()
-			return val >= b && val <= a
-		}
-	}
-	return false
-}
-
-/**
  * 跨字段比较
+ * eg: eq_field=Password
  */
 func eq_field(f *Field, arg string) bool {
 	compare_val := f.RefStruct.FieldByName(arg)
@@ -301,6 +236,7 @@ func eq_field(f *Field, arg string) bool {
 /**
  * 格式化：邮箱
  * 适用类型：字符串
+ * eg: format=email
  */
 func email(f *Field) bool {
 	switch f.Kind {
@@ -314,6 +250,7 @@ func email(f *Field) bool {
 /**
  * 格式化：中国手机
  * 适用类型：字符串
+ * eg: format=cn_mobile
  */
 func cn_mobile(f *Field) bool {
 	switch f.Kind {
@@ -327,6 +264,7 @@ func cn_mobile(f *Field) bool {
 /**
  * 格式化：网址
  * 使用类型：字符串
+ * eg: format=cn_mobile
  */
 func url(f *Field) bool {
 	switch f.Kind {
@@ -339,6 +277,7 @@ func url(f *Field) bool {
 
 /**
  * 安全的字符串
+ * eg: format=safe_str
  */
 func safe_str(f *Field) bool {
 	switch f.Kind {
@@ -351,6 +290,7 @@ func safe_str(f *Field) bool {
 
 /**
  * 过滤首尾空格
+ * eg: format=trim_space
  */
 func trim_space(f *Field) bool {
 	switch f.Kind {
