@@ -119,8 +119,8 @@ func main() {
 		Name:           "even cc",
 		FirstName:      "ccsdsdsd",
 		Age:            0,
-		Password:       "1qaz@2wsx",
-		PasswordRepeat: "1qaz@2wsx1",
+		Password:       "123456",
+		PasswordRepeat: "1234567",
 		DateStart:      "2022-05",
 	}
 	v.AddCompareMethod("lt_field", func(f *element.Field, arg string) bool {
