@@ -4,7 +4,7 @@ import (
 	"reflect"
 	"strconv"
 	"strings"
-	"utils/validate/element"
+	"validate/element"
 )
 
 type CompareFunc func(f *element.Field, arg string) bool

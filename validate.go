@@ -3,8 +3,8 @@ package validate
 import (
 	"fmt"
 	"reflect"
-	"utils/validate/element"
-	"utils/validate/method"
+	"validate/element"
+	"validate/method"
 )
 
 var DebugModel bool

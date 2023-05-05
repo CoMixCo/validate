@@ -4,8 +4,8 @@ import (
 	"fmt"
 	"reflect"
 	"time"
-	"utils/validate"
-	"utils/validate/element"
+	"validate"
+	"validate/element"
 )
 
 func main() {

@@ -5,7 +5,7 @@ import (
 	"regexp"
 	"strings"
 	"time"
-	"utils/validate/element"
+	"validate/element"
 )
 
 type FormatFunc func(f *element.Field) bool
