@@ -4,7 +4,8 @@ import (
 	"reflect"
 	"strconv"
 	"strings"
-	"validate/element"
+
+	"github.com/coco-look/validate/element"
 )
 
 type CompareFunc func(f *element.Field, arg string) bool

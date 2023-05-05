@@ -3,8 +3,10 @@ package validate
 import (
 	"fmt"
 	"reflect"
-	"validate/element"
-	"validate/method"
+
+	"github.com/coco-look/validate/method"
+
+	"github.com/coco-look/validate/element"
 )
 
 var DebugModel bool

@@ -5,7 +5,8 @@ import (
 	"regexp"
 	"strings"
 	"time"
-	"validate/element"
+
+	"github.com/coco-look/validate/element"
 )
 
 type FormatFunc func(f *element.Field) bool

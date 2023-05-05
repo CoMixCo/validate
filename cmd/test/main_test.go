@@ -3,7 +3,8 @@ package main
 import (
 	"fmt"
 	"testing"
-	"validate"
+
+	"github.com/coco-look/validate"
 )
 
 func TestUrl(t *testing.T) {

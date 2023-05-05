@@ -4,8 +4,9 @@ import (
 	"fmt"
 	"reflect"
 	"time"
-	"validate"
-	"validate/element"
+
+	"github.com/coco-look/validate"
+	"github.com/coco-look/validate/element"
 )
 
 func main() {
